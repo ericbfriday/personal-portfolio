@@ -1,4 +1,4 @@
-var myApp = angular.module('myApp', ['ngRoute', 'ngMaterial', 'NavBar']);
+var myApp = angular.module('myApp', ['ngRoute', 'ngMaterial', 'NavBar', 'CodeTiles']);
 
 /// Routes ///
 myApp.config(function($routeProvider, $locationProvider) {
@@ -13,8 +13,11 @@ myApp.config(function($routeProvider, $locationProvider) {
       templateUrl: '/views/aboutme.html',
       controller: 'UserController as uc'
     })
-    .when('/aboutme', {
-      templateUrl: '/views/aboutme.html',
+    .when('/aboutcode', {
+      templateUrl: '/views/aboutcode.html',
       controller: 'UserController as uc'
+    }).otherwise('/', {
+      templateUrl: '/views/home.html',
+      controller: 'UserController as uc', 
     });
 });

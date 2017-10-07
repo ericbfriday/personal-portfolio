@@ -3,7 +3,7 @@ angular.module('NavBar', ['ngMaterial']) // creates NavBar with ngMaterial Depen
 
     var vm = this;
 
-    // provies basic functionality for nav bar
+// provies basic functionality for nav bar
 function navCtrl($scope) {
     vm.currentNavItem = 'home';
 
