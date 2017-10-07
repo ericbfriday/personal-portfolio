@@ -1,11 +1,12 @@
-<p>about code page</p>
-<hr>
 
-<div ng-controller="CodeController as cc" ng-cloak>
+<div ng-controller="CodeController as cc" ng-cloak ng-init="cc.tileMaker()">  <!-- ng-init="cc.tileCombiner(cc.repos, cc.gridTiles)" -->
+        <!-- <md-button ng-click="cc.logger()" class="md-raised md-primary">Log vm.repos & vm.gridTiles</md-button> -->
+        <md-button ng-click="cc.tileCombiner(cc.repos, cc.gridTiles)", class="md-raised md-primary">COMBINE!</md-button>
+        <hr>
     <md-content layout-padding>
         <md-grid-list md-cols-gt-md="12" md-cols="3" md-cols-md="8" md-row-height-gt-md="1:1" md-row-height="4:3" md-gutter-gt-md="16px"
-            md-gutter-md="8px" md-gutter="4px">
-            <md-grid-tile ng-repeat="repo in cc.repos.data" ng-style="{'background': cc.colors[$index]}" md-colspan-gt-sm="{{repo.colspan}}" md-rowspan-gt-sm="{{repo.rowspan}}" layout-wrap>
+            md-gutter-md="8px" md-gutter="4px" ng-init="cc.tileCombiner(cc.repos, cc.gridTiles)">
+            <md-grid-tile ng-repeat="repo in cc.combinedTiles.data" style="background-color: {{repo.color}};" md-colspan-gt-sm="{{repo.colspan}}" md-rowspan-gt-sm="{{repo.rowspan}}" layout-wrap>
                 <!-- <div ng-repeat="repo in cc.repos.data">Repo Name: {{repo.name}} -->
                 <div>Repo Name: {{repo.name}}
                     <br> URL: <a ng-href="{{repo.html_url}}">{{repo.html_url}}</a>
@@ -14,11 +15,3 @@
         </md-grid-list>
     </md-content>
 </div>
-
-<!-- <div>
-    <div ng-repeat="repo in uc.repos.data">Repo Name: {{repo.name}}
-        <br> URL:
-        <a ng-href="{{repo.html_url}}">{{repo.html_url}}
-        </a>
-    </div>
-</div> -->
