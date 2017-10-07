@@ -1,4 +1,4 @@
-var myApp = angular.module('myApp', ['ngRoute']);
+var myApp = angular.module('myApp', ['ngRoute', 'ngMaterial', 'NavBar']);
 
 /// Routes ///
 myApp.config(function($routeProvider, $locationProvider) {
@@ -6,7 +6,15 @@ myApp.config(function($routeProvider, $locationProvider) {
 
   $routeProvider
     .when('/', {
-      templateUrl: '/views/user.html',
+      templateUrl: '/views/home.html',
       controller: 'UserController as uc',
+    })
+    .when('/aboutme', {
+      templateUrl: '/views/aboutme.html',
+      controller: 'UserController as uc'
+    })
+    .when('/aboutme', {
+      templateUrl: '/views/aboutme.html',
+      controller: 'UserController as uc'
     });
 });

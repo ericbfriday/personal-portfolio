@@ -1,18 +1,61 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>Projects</title>
-    <script src="vendors/angular.min.js" charset="utf-8"></script>
-    <script src="vendors/angular-route.min.js" charset="utf-8"></script>
-    <script src="scripts/client.js" charset="utf-8"></script>
-    <script src="scripts/user.controller.js" charset="utf-8"></script>
-    <script src="scripts/github.service.js" charset="utf-8"></script>
-  </head>
-  <body ng-app="myApp">
-    <h1>Hello World</h1>
-    <main ng-view>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js">
+<!--<![endif]-->
 
-    </main>
-  </body>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Title</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Basic Angular sourcing -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+
+  <!-- Other scripts below -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/angular-aria.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/angular-animate.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-messages/1.6.4/angular-messages.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.4/angular-material.min.js"></script>
+  
+  <!-- vv required -->
+  <script src="/scripts/client.js"></script>
+  <link rel="stylesheet" href="https://gitcdn.link/repo/angular/bower-material/master/angular-material.css">
+  <link rel="stylesheet" href="/styles/styles.css"></link>
+  <script src="scripts/controllers/user.controller.js" charset="utf-8"></script>
+  <script src="scripts/controllers/navbar.controller.js"></script>
+  <script src="scripts/services/github.service.js" charset="utf-8"></script>
+
+</head>
+
+<body ng-app="myApp">
+  <div ng-controller="NavCtrl" ng-cloak>
+    <md-content class="md-padding">
+      <md-nav-bar md-no-ink-bar="disableInkBar" md-selected-nav-item="currentNavItem" nav-bar-aria-label="navigation links">
+        <md-nav-item md-nav-click="goto('home')" name="home">
+          Home
+        </md-nav-item>
+        <md-nav-item mdNavHref="/aboutme" md-nav-click="goto('aboutMe')" name="aboutMe">
+          About Me
+        </md-nav-item>
+        <md-nav-item md-nav-click="goto('myProjects')" name="myProjects">
+          My Projects
+        </md-nav-item>
+      </md-nav-bar>
+      <div class="ext-content">
+        <h1><span>{{currentNavItem}}</span></h1>
+        <main ng-view>
+        </main>
+      </div>
+
+    </md-content>
+  </div>
+
+</body>
+
 </html>
