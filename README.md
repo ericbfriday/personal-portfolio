@@ -1,6 +1,12 @@
 #Heroku Deployment Site:
 https://ericbfriday-portfolio.herokuapp.com
 
+To Do List:
+Write repo descriptions (which autofill on aboutcode page)
+Rename repos with dashes so they auto-wrap correctly.
+Color theme update on slides to make tones more consistent with grey font and pink highliht. 
+
+
 # Weekend 6 HW  (Part One)
 ## Start a Portfolio
 
