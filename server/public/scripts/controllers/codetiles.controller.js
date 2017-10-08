@@ -31,6 +31,7 @@ angular.module('CodeTiles', ['ngMaterial'])
                 vm.combinedTiles.data.push({
                     color: gridTiles.data[i].color,
                     colspan: gridTiles.data[i].colspan,
+                    description: repos.data[i].description,
                     rowspan: gridTiles.data[i].rowspan,
                     name: repos.data[i].name,
                     html_url: repos.data[i].html_url,
