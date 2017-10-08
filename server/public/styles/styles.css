@@ -9,6 +9,18 @@ body {
     width: 230px;
 }
 
+#homeLinks img {
+    height: 100px;
+    width: 100px;
+    margin: 10px 50px 10px 50px;
+    opacity: 0.54;
+}
+
+#homeName {
+    font-size: 4.5em;
+    padding: 50px 50px 50px 50px;
+}
+
 .repoTiles {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     overflow: hidden;
