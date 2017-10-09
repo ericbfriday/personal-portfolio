@@ -2,9 +2,12 @@
 https://ericbfriday-portfolio.herokuapp.com
 
 To Do List:
-Write repo descriptions (which autofill on aboutcode page)
+Write repo descriptions within Github (which autofill on aboutcode page)
 Rename repos with dashes so they auto-wrap correctly.
-Color theme update on slides to make tones more consistent with grey font and pink highliht. 
+Color theme update on slides to make color tones more consistent with grey font and pink highliht. 
+Pull languages from Github and display corresponding logo.
+Images for the bigger repos.
+Create overall pallette & apply theme to site.
 
 
 # Weekend 6 HW  (Part One)

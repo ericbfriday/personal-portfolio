@@ -1,9 +1,9 @@
 var myApp = angular.module('myApp', ['ngRoute', 'ngMaterial', 'NavBar', 'CodeTiles']);
 
 /// Routes ///
-myApp.config(function($routeProvider, $locationProvider, $mdThemingProvider) {
+myApp.config(function ($routeProvider, $locationProvider, $mdThemingProvider) {
   $locationProvider.hashPrefix('');
- 
+
   $mdThemingProvider.theme('default')
     .primaryPalette('pink')
     .accentPalette('blue');
@@ -22,6 +22,6 @@ myApp.config(function($routeProvider, $locationProvider, $mdThemingProvider) {
       controller: 'UserController as uc'
     }).otherwise('/', {
       templateUrl: '/views/home.html',
-      controller: 'UserController as uc', 
+      controller: 'UserController as uc',
     });
 });
