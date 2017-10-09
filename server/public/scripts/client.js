@@ -1,8 +1,12 @@
 var myApp = angular.module('myApp', ['ngRoute', 'ngMaterial', 'NavBar', 'CodeTiles']);
 
 /// Routes ///
-myApp.config(function($routeProvider, $locationProvider) {
+myApp.config(function($routeProvider, $locationProvider, $mdThemingProvider) {
   $locationProvider.hashPrefix('');
+ 
+  $mdThemingProvider.theme('default')
+    .primaryPalette('pink')
+    .accentPalette('blue');
 
   $routeProvider
     .when('/', {

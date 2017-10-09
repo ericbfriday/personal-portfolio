@@ -7,7 +7,7 @@
         <md-grid-list md-cols-gt-md="12" md-cols="3" md-cols-md="8" md-row-height-gt-md="1:1" md-row-height="4:3" md-gutter-gt-md="16px"
             md-gutter-md="8px" md-gutter="4px" ng-init="cc.tileCombiner(cc.repos, cc.gridTiles)">
             
-                <md-grid-tile class="repoTiles md-whiteframe-5dp" layout="row" layout-align="center center" ng-repeat="repo in cc.combinedTiles.data | orderBy : created_at"
+                <md-grid-tile class="repoTiles md-whiteframe-5dp" layout="row" layout-align="center center" ng-repeat="repo in cc.combinedTiles.data | orderBy : '-created_at'"
                     style="background-color: {{repo.color}};" md-colspan-gt-sm="{{repo.colspan}}" md-rowspan-gt-sm="{{repo.rowspan}}"
                     layout-wrap>
                     <a ng-href="{{repo.html_url}}" style="text-decoration: none; color: black;">
