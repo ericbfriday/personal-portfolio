@@ -1,4 +1,4 @@
-# Weekend 6 HW  (Part One)
+# Weekend 6 HW
 ## Start a Portfolio
 
 ### Objectives
