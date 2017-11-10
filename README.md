@@ -12,7 +12,7 @@
 - `npm install`
 - Create a new `personal access token` on GitHub. This is under the user setting.
 	- [Generate a GitHub Token](https://github.com/settings/tokens). Select only `public_repo` and `read:user`.
-- Create a `.env` file and add a `USER_NAME` and `GIT_TOKEN` to it. The `.env` is already added to the `.gitignore` so that you will not push it to github.
+- Create a `.env` file and add a `USER_NAME` and `GIT_TOKEN` to it. The `.env` is already added to the `.gitignore` so that you will not push it to github. More information about dotenv can be found [here](https://www.npmjs.com/package/dotenv).
 - `npm start`
 
 ### Instructions
