@@ -1,6 +1,6 @@
 myApp.controller('UserController', function (GithubService) {
-  console.log('UserController loaded.');
-  var vm = this;
+  // console.log('UserController loaded.');
+  const vm = this;
 
   vm.user = GithubService.user;
   vm.repos = GithubService.repos;
@@ -11,6 +11,5 @@ myApp.controller('UserController', function (GithubService) {
 
   vm.openurl = function(url){
     window.open(url, '_blank','heigth=600,width=600');   // may alse try $window
-} 
-
+};
 });
