@@ -20,6 +20,9 @@ myApp.config(function ($routeProvider, $locationProvider, $mdThemingProvider) {
     .when('/aboutcode', {
       templateUrl: '/views/aboutcode.html',
       controller: 'UserController as uc'
+    }).when('/resume', {
+      templateUrl: '/views/resume.html',
+      controller: 'UserController as uc',
     }).otherwise('/', {
       templateUrl: '/views/home.html',
       controller: 'UserController as uc',
