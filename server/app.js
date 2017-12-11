@@ -2,12 +2,10 @@ var express = require('express');
 var path = require('path');
 require('dotenv').config();
 var app = express();
-var port = process.env.PORT || 5000;
+var port = process.env.PORT || 40499;
 
 app.use(express.static('server/public'));
 
-// Using requst module to make HTTP requests from the server
-// https://www.npmjs.com/package/request
 var request = require('request');
 
 // API Key & username are environment variables in Heroku
