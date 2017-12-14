@@ -4,7 +4,7 @@ require('dotenv').config();
 var app = express();
 var port = process.env.PORT || 40499;
 
-app.use(express.static('server/public'));
+app.use(express.static('/public'));
 
 var request = require('request');
 
