@@ -1,20 +1,16 @@
-var express = require('express');
-var path = require('path');
+const express = require('express');
+const path = require('path');
 require('dotenv').config();
-var app = express();
-var port = process.env.PORT || 40499;
-
+const app = express();
+const port = process.env.PORT || 40499;
 app.use(express.static('/public'));
-
-var request = require('request');
-
-// API Key & username are environment variables in Heroku
-var username = process.env.USER_NAME;
-var oauthToken = process.env.GIT_TOKEN;
+const request = require('request');
+const username = process.env.USER_NAME;
+const oauthToken = process.env.GIT_TOKEN;
 
 app.use(express.static('public'));
 
-var user_options = {
+const user_options = {
   url: 'https://api.github.com/users/' + username,
   headers: {
     'User-Agent': 'request',
@@ -22,7 +18,6 @@ var user_options = {
   }
 };
 
-// Moved API call into server to protect oAuthToken
 app.get('/github/user', function (req, res) {
   request(user_options, function (error, response, body) {
     if (response && response.statusCode == 200) {
@@ -33,7 +28,7 @@ app.get('/github/user', function (req, res) {
   });
 });
 
-var repo_options = {
+const repo_options = {
   url: 'https://api.github.com/users/' + username + '/repos',
   headers: {
     'User-Agent': 'request',
@@ -41,7 +36,6 @@ var repo_options = {
   }
 };
 
-// Moved API call into server to protect oAuthToken
 app.get('/github/repos', function (req, res) {
   request(repo_options, function (error, response, body) {
     if (response && response.statusCode == 200) {
