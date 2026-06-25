@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&family=IBM+Plex+Mono:wght@400;500&family=Spline+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  :root{
+    --paper:#f4f5f2; --paper-2:#ebede9; --band:#e6ede9; --card:#fbfcfa;
+    --ink:#19211e; --ink-soft:#45504b; --muted:#8b958f; --line:#dde1dc;
+    --green:#2e7d6a; --green-soft:#dcebe5; --blue:#3a6ea5; --blue-soft:#e0eaf2;
+    --body-font:'Newsreader',Georgia,serif;
+  }
+  html[data-theme="dark"]{
+    --paper:#0f1513; --paper-2:#141b18; --band:#141d19; --card:#151d19;
+    --ink:#e9efea; --ink-soft:#aab4ae; --muted:#727d77; --line:#26302b;
+    --green:#5cc0a6; --green-soft:#173029; --blue:#6fa6d8; --blue-soft:#152630;
+  }
+  html[data-body="sans"]{ --body-font:'Spline Sans',system-ui,sans-serif; }
+  html[data-accent="green"]{ --blue:#2e7d6a; --blue-soft:#dcebe5; }
+  html[data-theme="dark"][data-accent="green"]{ --blue:#5cc0a6; --blue-soft:#173029; }
+  html[data-accent="blue"]{ --green:#3a6ea5; --green-soft:#e0eaf2; }
+  html[data-theme="dark"][data-accent="blue"]{ --green:#6fa6d8; --green-soft:#152630; }
+  body{background:var(--paper);color:var(--ink);font-family:var(--body-font);transition:background .45s ease,color .45s ease;}
+  a{color:inherit;text-decoration:none;}
+  @keyframes ebfblink{0%,55%{opacity:1}56%,100%{opacity:0}}
+</style>
+<script>
+  // Last-resort reveal safety net — independent of the React component's
+  // lifecycle, scroll, and IntersectionObserver. Guarantees no [data-reveal]
+  // element is ever stranded at opacity:0 (e.g. in the offline bundle, where
+  // the splash→page swap and timer scheduling can starve the in-app reveal).
+  (function () {
+    function revealAll() {
+      document.querySelectorAll('[data-reveal]').forEach(function (el) {
+        if (el.dataset.shown) return;
+        el.dataset.shown = '1';
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+        if (el.hasAttribute('data-counts')) {
+          el.querySelectorAll('[data-count]').forEach(function (c) {
+            c.textContent = (c.dataset.prefix || '') + c.dataset.count + (c.dataset.suffix || '');
+          });
+        }
+      });
+    }
+    window.addEventListener('load', function () { setTimeout(revealAll, 5000); });
+    setTimeout(revealAll, 6500);
+  })();
+</script>
+</helmet>
+
+<div ref="{{ rootRef }}" style="position:relative;overflow-x:hidden;">
+
+  <!-- scroll progress -->
+  <div ref="{{ barRef }}" style="position:fixed;top:0;left:0;height:2px;width:0%;background:var(--green);z-index:200;transition:width .08s linear;"></div>
+
+  <!-- ===== top bar ===== -->
+  <header style="position:sticky;top:0;z-index:100;background:color-mix(in srgb, var(--paper) 80%, transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line);">
+    <div style="max-width:1080px;margin:0 auto;padding:13px 28px;display:flex;align-items:center;justify-content:space-between;gap:18px;">
+      <a href="#top" style="display:flex;align-items:baseline;gap:9px;">
+        <span style="font-family:'Newsreader',serif;font-weight:600;font-size:19px;letter-spacing:-.3px;">Eric&nbsp;Friday</span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);">FE · AppSec · AI</span>
+      </a>
+      <nav style="display:flex;align-items:center;gap:22px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.5px;color:var(--ink-soft);">
+        <a href="#work" style="transition:color .2s;" style-hover="color:var(--green);">Work</a>
+        <a href="#skills" style="transition:color .2s;" style-hover="color:var(--green);">Skills</a>
+        <a href="#leadership" style="transition:color .2s;" style-hover="color:var(--green);">Leadership</a>
+        <a href="#map" style="transition:color .2s;" style-hover="color:var(--green);">Map</a>
+        <a href="#timeline" style="transition:color .2s;" style-hover="color:var(--green);">Timeline</a>
+        <a href="#contact" style="transition:color .2s;" style-hover="color:var(--green);">Contact</a>
+        <button onClick="{{ toggleTheme }}" aria-label="Toggle theme" style="width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:transform .4s ease,border-color .2s;" style-hover="border-color:var(--green);transform:rotate(35deg);">{{ themeIcon }}</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== hero band ===== -->
+  <section id="top" style="background:var(--band);border-bottom:1px solid var(--line);">
+    <div style="max-width:1080px;margin:0 auto;padding:78px 28px 64px;">
+      <div data-reveal style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:3px;text-transform:uppercase;color:var(--green);margin-bottom:22px;">Portfolio · Frontend · AppSec · AI&nbsp;Tooling</div>
+      <h1 data-reveal style="font-family:'Newsreader',serif;font-weight:500;font-size:clamp(52px,10vw,128px);line-height:.92;letter-spacing:-.035em;margin:0;">Eric B.<br>Friday</h1>
+      <div data-reveal style="font-family:'Newsreader',serif;font-style:italic;font-weight:400;font-size:clamp(18px,2.4vw,26px);color:var(--ink-soft);margin-top:20px;">Senior Frontend &amp; Application Security Engineer — NMDP / CIBMTR</div>
+      <p data-reveal style="max-width:660px;font-size:clamp(16px,1.7vw,19px);line-height:1.6;color:var(--ink-soft);margin:26px 0 0;">I build and harden the software that connects patients to life-saving cell therapies. Four threads run through the work: owning NMDP's Okta identity libraries and an org-wide supply-chain security program; shipping frontend platforms at scale across Biotherapies, MatchSync, and CIBMTR; building production MCP servers and AI developer tooling; and acting as the de-facto security reviewer and pattern-decider across teams.</p>
+
+      <!-- contents (book-like) -->
+      <div data-reveal style="margin-top:48px;max-width:540px;border-top:1px solid var(--line);padding-top:8px;">
+        <a href="#work" style="display:flex;align-items:baseline;gap:14px;padding:13px 2px;border-bottom:1px solid var(--line);" style-hover="color:var(--green);"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);width:24px;">01</span><span style="font-family:'Newsreader',serif;font-size:20px;">Selected Work</span><span style="flex:1;border-bottom:1px dotted var(--muted);opacity:.5;transform:translateY(-4px);"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);">→</span></a>
+        <a href="#skills" style="display:flex;align-items:baseline;gap:14px;padding:13px 2px;border-bottom:1px solid var(--line);" style-hover="color:var(--green);"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);width:24px;">02</span><span style="font-family:'Newsreader',serif;font-size:20px;">Skills &amp; Competencies</span><span style="flex:1;border-bottom:1px dotted var(--muted);opacity:.5;transform:translateY(-4px);"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);">→</span></a>
+        <a href="#leadership" style="display:flex;align-items:baseline;gap:14px;padding:13px 2px;border-bottom:1px solid var(--line);" style-hover="color:var(--green);"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);width:24px;">03</span><span style="font-family:'Newsreader',serif;font-size:20px;">Leadership &amp; Review</span><span style="flex:1;border-bottom:1px dotted var(--muted);opacity:.5;transform:translateY(-4px);"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);">→</span></a>
+        <a href="#map" style="display:flex;align-items:baseline;gap:14px;padding:13px 2px;border-bottom:1px solid var(--line);" style-hover="color:var(--green);"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);width:24px;">04</span><span style="font-family:'Newsreader',serif;font-size:20px;">Contribution Map</span><span style="flex:1;border-bottom:1px dotted var(--muted);opacity:.5;transform:translateY(-4px);"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);">→</span></a>
+        <a href="#timeline" style="display:flex;align-items:baseline;gap:14px;padding:13px 2px;border-bottom:1px solid var(--line);" style-hover="color:var(--green);"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);width:24px;">05</span><span style="font-family:'Newsreader',serif;font-size:20px;">Timeline</span><span style="flex:1;border-bottom:1px dotted var(--muted);opacity:.5;transform:translateY(-4px);"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);">→</span></a>
+        <a href="#contact" style="display:flex;align-items:baseline;gap:14px;padding:13px 2px;" style-hover="color:var(--green);"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);width:24px;">06</span><span style="font-family:'Newsreader',serif;font-size:20px;">Contact</span><span style="flex:1;border-bottom:1px dotted var(--muted);opacity:.5;transform:translateY(-4px);"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== selected work ===== -->
+  <section id="work" style="max-width:1080px;margin:0 auto;padding:84px 28px;scroll-margin-top:70px;">
+    <div data-reveal style="display:flex;align-items:baseline;gap:14px;margin-bottom:14px;">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:2px;color:var(--green);">01</span>
+      <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:clamp(30px,4.4vw,46px);letter-spacing:-.02em;margin:0;">Selected Work</h2>
+    </div>
+    <p data-reveal style="max-width:640px;color:var(--ink-soft);font-size:17px;line-height:1.6;margin:0 0 44px;">Engagements that map the threads of my work — securing identity &amp; the supply chain, delivering frontend platforms at scale, and building the AI/MCP tooling other developers' agents depend on.</p>
+
+    <!-- featured -->
+    <article data-reveal style="display:grid;grid-template-columns:1.02fr .98fr;gap:42px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:38px;margin-bottom:24px;transition:border-color .25s,transform .25s;" style-hover="border-color:var(--green);">
+      <div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:14px;">01 · AppSec / DevOps · sole owner</div>
+        <h3 style="font-family:'Newsreader',serif;font-weight:500;font-size:30px;letter-spacing:-.01em;margin:0 0 14px;">npm Supply-Chain Security Program</h3>
+        <p style="color:var(--ink-soft);font-size:16.5px;line-height:1.62;margin:0 0 18px;">A self-directed, org-wide hardening effort. <b style="color:var(--ink);font-weight:600;">npmrc-research</b> defines registry-compliance standards; <b style="color:var(--ink);font-weight:600;">frontend-security-audit</b> operationalizes them as a package-manager-aware auditor running 5 adaptive PASS/WARN/FAIL checks across 58+ repos on scheduled CI scans.</p>
+        <div style="border-left:3px solid var(--green);padding-left:16px;font-family:'Newsreader',serif;font-style:italic;font-size:18px;color:var(--ink);margin:0 0 20px;">Lockfile health, registry config, deterministic installs, version pinning — enforced continuously, reported by email.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;border:1px solid var(--line);border-radius:6px;padding:4px 10px;color:var(--ink-soft);">npm · yarn · pnpm</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;border:1px solid var(--line);border-radius:6px;padding:4px 10px;color:var(--ink-soft);">CI scans</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;border:1px solid var(--line);border-radius:6px;padding:4px 10px;color:var(--ink-soft);">ADRs</span>
+        </div>
+      </div>
+      <!-- terminal -->
+      <div style="background:#0e1411;border:1px solid #1f2a25;border-radius:11px;overflow:hidden;box-shadow:0 18px 46px rgba(0,0,0,.22);font-family:'IBM Plex Mono',monospace;">
+        <div style="display:flex;align-items:center;gap:7px;padding:10px 14px;background:#131b17;border-bottom:1px solid #1f2a25;">
+          <span style="width:9px;height:9px;border-radius:50%;background:#c0563f;display:inline-block;"></span>
+          <span style="width:9px;height:9px;border-radius:50%;background:#c98a3a;display:inline-block;"></span>
+          <span style="width:9px;height:9px;border-radius:50%;background:#5cc0a6;display:inline-block;"></span>
+          <span style="font-size:11px;color:#5a6a64;margin-left:8px;">frontend-security-audit</span>
+        </div>
+        <div style="padding:16px 16px 18px;font-size:12.5px;line-height:1.95;">
+          <div style="color:#7fd1bd;">$ fsa run --all <span style="color:#52615b;"># 58 repos</span></div>
+          <div style="color:#9aa6a0;">scanning repositories…</div>
+          <div style="display:flex;justify-content:space-between;"><span style="color:#5cc0a6;">✔ lockfile-health</span><span style="color:#52615b;">PASS&nbsp;&nbsp;52</span></div>
+          <div style="display:flex;justify-content:space-between;"><span style="color:#d6a04e;">▲ registry-config</span><span style="color:#52615b;">WARN&nbsp;&nbsp;&nbsp;4</span></div>
+          <div style="display:flex;justify-content:space-between;"><span style="color:#cf6b53;">✖ deterministic-install</span><span style="color:#52615b;">FAIL&nbsp;&nbsp;&nbsp;2</span></div>
+          <div style="display:flex;justify-content:space-between;"><span style="color:#5cc0a6;">✔ ci-registry-usage</span><span style="color:#52615b;">PASS&nbsp;&nbsp;55</span></div>
+          <div style="display:flex;justify-content:space-between;"><span style="color:#5cc0a6;">✔ version-pinning</span><span style="color:#52615b;">PASS&nbsp;&nbsp;49</span></div>
+          <div style="color:#9aa6a0;margin-top:6px;">report emailed · next run scheduled<span style="color:#7fd1bd;animation:ebfblink 1.1s steps(1) infinite;">▋</span></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- featured: AI / MCP -->
+    <article data-reveal style="display:grid;grid-template-columns:1.02fr .98fr;gap:42px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:38px;margin-bottom:24px;transition:border-color .25s,transform .25s;" style-hover="border-color:var(--green);">
+      <div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:14px;">02 · AI / LLM Tooling · self-directed program</div>
+        <h3 style="font-family:'Newsreader',serif;font-weight:500;font-size:30px;letter-spacing:-.01em;margin:0 0 14px;">AI Developer Productivity &amp; MCP Servers</h3>
+        <p style="color:var(--ink-soft);font-size:16.5px;line-height:1.62;margin:0 0 18px;"><b style="color:var(--ink);font-weight:600;">@nmdp/jira-mcp</b> — a production Model Context Protocol server published to NMDP's private Nexus registry, exposing <b style="color:var(--ink);font-weight:600;">89 tools</b> across 5 domain servers. Alongside it: a 5-server API-discovery pipeline, an AWS Bedrock HLA-extraction PoC, and Kiro/Claude agent ecosystems — infrastructure other developers' AI agents depend on.</p>
+        <div style="border-left:3px solid var(--green);padding-left:16px;font-family:'Newsreader',serif;font-style:italic;font-size:18px;color:var(--ink);margin:0 0 20px;">Not "used Copilot" — built the tooling that makes Jira, APIs, and clinical documents operable by any MCP-aware agent.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;border:1px solid var(--line);border-radius:6px;padding:4px 10px;color:var(--ink-soft);">Model Context Protocol</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;border:1px solid var(--line);border-radius:6px;padding:4px 10px;color:var(--ink-soft);">TypeScript · Effect</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;border:1px solid var(--line);border-radius:6px;padding:4px 10px;color:var(--ink-soft);">AWS Bedrock</span>
+        </div>
+      </div>
+      <!-- registry panel -->
+      <div style="background:#0e1411;border:1px solid #1f2a25;border-radius:11px;overflow:hidden;box-shadow:0 18px 46px rgba(0,0,0,.22);font-family:'IBM Plex Mono',monospace;">
+        <div style="display:flex;align-items:center;gap:7px;padding:10px 14px;background:#131b17;border-bottom:1px solid #1f2a25;">
+          <span style="width:9px;height:9px;border-radius:50%;background:#c0563f;display:inline-block;"></span>
+          <span style="width:9px;height:9px;border-radius:50%;background:#c98a3a;display:inline-block;"></span>
+          <span style="width:9px;height:9px;border-radius:50%;background:#5cc0a6;display:inline-block;"></span>
+          <span style="font-size:11px;color:#5a6a64;margin-left:8px;">@nmdp/jira-mcp · nexus</span>
+        </div>
+        <div style="padding:16px 16px 18px;font-size:12.5px;line-height:1.95;">
+          <div style="color:#7fd1bd;">$ mcp list --server jira <span style="color:#52615b;"># 89 tools</span></div>
+          <div style="display:flex;justify-content:space-between;"><span style="color:#9aa6a0;">jira-core-mcp</span><span style="color:#5cc0a6;">47 tools</span></div>
+          <div style="display:flex;justify-content:space-between;"><span style="color:#9aa6a0;">jira-agile-mcp</span><span style="color:#5cc0a6;">19 tools</span></div>
+          <div style="display:flex;justify-content:space-between;"><span style="color:#9aa6a0;">jira-dev-mcp</span><span style="color:#5cc0a6;">15 + 4 prompts</span></div>
+          <div style="display:flex;justify-content:space-between;"><span style="color:#9aa6a0;">jira-context-mcp</span><span style="color:#5cc0a6;">8 + resources</span></div>
+          <div style="color:#52615b;margin-top:4px;">ESM · Node 22+ · Zod · Biome · pnpm-only</div>
+          <div style="color:#9aa6a0;margin-top:6px;">published → nexus.nmdp.org<span style="color:#7fd1bd;animation:ebfblink 1.1s steps(1) infinite;">▋</span></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- grid -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+      <article data-reveal style="background:var(--card);border:1px solid var(--line);border-radius:16px;padding:30px;transition:border-color .25s,transform .25s;" style-hover="border-color:var(--green);transform:translateY(-3px);">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:12px;">03 · AppSec · ~150 commits</div>
+        <h3 style="font-family:'Newsreader',serif;font-weight:500;font-size:24px;margin:0 0 12px;">SEL — Secure Enterprise Login</h3>
+        <p style="color:var(--ink-soft);font-size:15.5px;line-height:1.6;margin:0 0 16px;">NMDP's shared Okta library for SPAs — SSO, session &amp; token management, authn/authz. I rewrote the core wrapper in TypeScript (tsup + Nx), ran the Angular 18→19 migrations, and authored the canonical OIDC guidance — "how to do auth at NMDP."</p>
+        <div style="display:flex;flex-wrap:wrap;gap:7px;">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;border:1px solid var(--line);border-radius:6px;padding:4px 10px;color:var(--ink-soft);">Okta</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;border:1px solid var(--line);border-radius:6px;padding:4px 10px;color:var(--ink-soft);">OIDC / SSO</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;border:1px solid var(--line);border-radius:6px;padding:4px 10px;color:var(--ink-soft);">TypeScript</span>
+        </div>
+      </article>
+
+      <article data-reveal style="background:var(--card);border:1px solid var(--line);border-radius:16px;padding:30px;transition:border-color .25s,transform .25s;" style-hover="border-color:var(--green);transform:translateY(-3px);">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:12px;">04 · Frontend · ~315 commits</div>
+        <h3 style="font-family:'Newsreader',serif;font-weight:500;font-size:24px;margin:0 0 12px;">Biotherapies — “Unite”</h3>
+        <p style="color:var(--ink-soft);font-size:15.5px;line-height:1.6;margin:0 0 16px;">My largest single-codebase contribution: an Angular / UI-Router app for the cell-collection &amp; donor-order workflow. Order carts, day-of-collection task handling, ISBT-128 fields, cancellation flows, admin APIs, plus extensive AngularJS→Angular cleanup.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:7px;">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;border:1px solid var(--line);border-radius:6px;padding:4px 10px;color:var(--ink-soft);">Angular</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;border:1px solid var(--line);border-radius:6px;padding:4px 10px;color:var(--ink-soft);">UI-Router</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;border:1px solid var(--line);border-radius:6px;padding:4px 10px;color:var(--ink-soft);">ISBT-128</span>
+        </div>
+      </article>
+
+      <article data-reveal style="background:var(--card);border:1px solid var(--line);border-radius:16px;padding:30px;transition:border-color .25s,transform .25s;" style-hover="border-color:var(--green);transform:translateY(-3px);">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:12px;">05 · AI / Tooling · owns</div>
+        <h3 style="font-family:'Newsreader',serif;font-weight:500;font-size:24px;margin:0 0 12px;">API Discovery Pipeline</h3>
+        <p style="color:var(--ink-soft);font-size:15.5px;line-height:1.6;margin:0 0 16px;">An end-to-end API-discovery pipeline built as 5 cooperating MCP servers — capture → infer → validate → mock → document — driven by a supervisor state machine with a validation→refinement feedback loop. Effect Schema, RFC 9457 errors, property-based testing, plus custom Kiro agents.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:7px;">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;border:1px solid var(--line);border-radius:6px;padding:4px 10px;color:var(--ink-soft);">Bun · Effect</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;border:1px solid var(--line);border-radius:6px;padding:4px 10px;color:var(--ink-soft);">OpenAPI · WireMock</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;border:1px solid var(--line);border-radius:6px;padding:4px 10px;color:var(--ink-soft);">Schemathesis</span>
+        </div>
+      </article>
+
+      <article data-reveal style="background:var(--card);border:1px solid var(--line);border-radius:16px;padding:30px;transition:border-color .25s,transform .25s;" style-hover="border-color:var(--green);transform:translateY(-3px);">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:12px;">06 · Gene/HLA · AI/ML PoC</div>
+        <h3 style="font-family:'Newsreader',serif;font-weight:500;font-size:24px;margin:0 0 12px;">HLA Extraction PoC</h3>
+        <p style="color:var(--ink-soft);font-size:15.5px;line-height:1.6;margin:0 0 16px;">An AWS Bedrock service extracting HLA typing data from medical documents — multi-model comparison (Nova, Claude 3, Llama 3), confidence scoring, a human-validation workflow, and Form 2005 generation. Connects the AppSec/frontend skill set to the Gene/HLA domain.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:7px;">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;border:1px solid var(--line);border-radius:6px;padding:4px 10px;color:var(--ink-soft);">AWS Bedrock</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;border:1px solid var(--line);border-radius:6px;padding:4px 10px;color:var(--ink-soft);">Express · TS</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;border:1px solid var(--line);border-radius:6px;padding:4px 10px;color:var(--ink-soft);">PostgreSQL · S3</span>
+        </div>
+      </article>
+
+      <article data-reveal style="background:var(--card);border:1px solid var(--line);border-radius:16px;padding:30px;transition:border-color .25s,transform .25s;" style-hover="border-color:var(--green);transform:translateY(-3px);">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:12px;">07 · CIBMTR · active 2026-06</div>
+        <h3 style="font-family:'Newsreader',serif;font-weight:500;font-size:24px;margin:0 0 12px;">CIBMTR Reporting App</h3>
+        <p style="color:var(--ink-soft);font-size:15.5px;line-height:1.6;margin:0 0 16px;">An Angular SMART-on-FHIR app retrieving EHR data into the CIBMTR FHIR server. I led a phased auth-hardening campaign: tokens moved to <code style="font-family:'IBM Plex Mono',monospace;font-size:13px;">sessionStorage</code>, PKCE, idle &amp; absolute session caps, issuer validation with an origin allowlist, and BroadcastChannel cross-tab sync.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:7px;">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;border:1px solid var(--line);border-radius:6px;padding:4px 10px;color:var(--ink-soft);">SMART-on-FHIR</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;border:1px solid var(--line);border-radius:6px;padding:4px 10px;color:var(--ink-soft);">PKCE</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;border:1px solid var(--line);border-radius:6px;padding:4px 10px;color:var(--ink-soft);">Session hardening</span>
+        </div>
+      </article>
+
+      <article data-reveal style="background:var(--card);border:1px solid var(--line);border-radius:16px;padding:30px;transition:border-color .25s,transform .25s;" style-hover="border-color:var(--green);transform:translateY(-3px);">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:12px;">08 · CIBMTR · research &amp; POC</div>
+        <h3 style="font-family:'Newsreader',serif;font-weight:500;font-size:24px;margin:0 0 12px;">SSR Viability Engagement</h3>
+        <p style="color:var(--ink-soft);font-size:15.5px;line-height:1.6;margin:0 0 16px;">Architecture research to move FHIR calls server-side — eliminating CORS/CSP/iframe failures at transplant centers and keeping tokens off the browser. Three Dockerized POCs and shared libraries: <code style="font-family:'IBM Plex Mono',monospace;font-size:13px;">@cibmtr/session-store</code> (AES-256-GCM) and a Playwright e2e suite.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:7px;">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;border:1px solid var(--line);border-radius:6px;padding:4px 10px;color:var(--ink-soft);">Next.js / Hono</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;border:1px solid var(--line);border-radius:6px;padding:4px 10px;color:var(--ink-soft);">React Router 7</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;border:1px solid var(--line);border-radius:6px;padding:4px 10px;color:var(--ink-soft);">Playwright</span>
+        </div>
+      </article>
+
+      <article data-reveal style="background:var(--card);border:1px solid var(--line);border-radius:16px;padding:30px;grid-column:1 / -1;transition:border-color .25s,transform .25s;" style-hover="border-color:var(--green);transform:translateY(-3px);">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:12px;">09 · MatchSync · ~150 commits combined</div>
+        <h3 style="font-family:'Newsreader',serif;font-weight:500;font-size:24px;margin:0 0 12px;">MatchSync Platform — IFA &amp; PMT</h3>
+        <p style="max-width:760px;color:var(--ink-soft);font-size:15.5px;line-height:1.6;margin:0 0 16px;">Across International Forms Automation and the Property Management Tool: OIDC RP &amp; auth-config libraries, the Next.js 14→15 upgrade, CSP reporting, security-header fixes, Better Auth role-based tRPC procedures, session-termination polling, and SonarQube remediation — a recurring better-auth architectural thread.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:7px;">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;border:1px solid var(--line);border-radius:6px;padding:4px 10px;color:var(--ink-soft);">Next.js 15</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;border:1px solid var(--line);border-radius:6px;padding:4px 10px;color:var(--ink-soft);">Better Auth</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;border:1px solid var(--line);border-radius:6px;padding:4px 10px;color:var(--ink-soft);">tRPC · Prisma</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;border:1px solid var(--line);border-radius:6px;padding:4px 10px;color:var(--ink-soft);">CSP</span>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===== skills ===== -->
+  <section id="skills" style="background:var(--paper-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line);scroll-margin-top:70px;">
+    <div style="max-width:1080px;margin:0 auto;padding:84px 28px;">
+      <div data-reveal style="display:flex;align-items:baseline;gap:14px;margin-bottom:14px;">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:2px;color:var(--green);">02</span>
+        <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:clamp(30px,4.4vw,46px);letter-spacing:-.02em;margin:0;">Skills &amp; Competencies</h2>
+      </div>
+      <p data-reveal style="max-width:640px;color:var(--ink-soft);font-size:17px;line-height:1.6;margin:0 0 44px;">Disciplines that meet at the browser: shipping frontend platforms, securing the identity &amp; supply chain underneath them, and building the AI/MCP tooling layered on top.</p>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;">
+        <div data-reveal style="background:var(--card);padding:28px;">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);margin-bottom:18px;">Frontend &amp; Platform</div>
+          <div style="display:flex;flex-direction:column;gap:11px;font-family:'Newsreader',serif;font-size:17px;line-height:1.25;">
+            <div>TypeScript</div><div>Angular &amp; AngularJS→Angular</div><div>Next.js 14 / 15 · React 19</div><div>Nx monorepos</div><div>UI-Router · tRPC · Prisma</div><div>SSR — Next · Hono · RR7</div>
+          </div>
+        </div>
+        <div data-reveal style="background:var(--card);padding:28px;">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);margin-bottom:18px;">AI / LLM Engineering</div>
+          <div style="display:flex;flex-direction:column;gap:11px;font-family:'Newsreader',serif;font-size:17px;line-height:1.25;">
+            <div>Model Context Protocol (MCP)</div><div>Production MCP servers</div><div>AWS Bedrock · multi-model</div><div>Effect · Zod schemas</div><div>Kiro / Claude agents</div><div>Multi-agent orchestration</div>
+          </div>
+        </div>
+        <div data-reveal style="background:var(--card);padding:28px;">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);margin-bottom:18px;">Security &amp; Identity</div>
+          <div style="display:flex;flex-direction:column;gap:11px;font-family:'Newsreader',serif;font-size:17px;line-height:1.25;">
+            <div>Okta · OIDC / SSO</div><div>SMART-on-FHIR · PKCE</div><div>Session hardening</div><div>CSP &amp; security headers</div><div>Better Auth</div><div>npm supply-chain auditing</div>
+          </div>
+        </div>
+        <div data-reveal style="background:var(--card);padding:28px;">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);margin-bottom:18px;">Quality &amp; DevOps</div>
+          <div style="display:flex;flex-direction:column;gap:11px;font-family:'Newsreader',serif;font-size:17px;line-height:1.25;">
+            <div>Playwright E2E</div><div>Zod validation</div><div>SonarQube</div><div>CI/CD security scans</div><div>Docker · Helm · K8s</div><div>ADRs · AES-256-GCM</div>
+          </div>
+        </div>
+        <div data-reveal style="background:var(--card);padding:28px;">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);margin-bottom:18px;">Healthcare Domain</div>
+          <div style="display:flex;flex-direction:column;gap:11px;font-family:'Newsreader',serif;font-size:17px;line-height:1.25;">
+            <div>FHIR R4</div><div>Cell-collection workflows</div><div>Donor order management</div><div>HLA / genotyping</div><div>ISBT-128</div><div>CIBMTR reporting</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== leadership ===== -->
+  <section id="leadership" style="max-width:1080px;margin:0 auto;padding:84px 28px;scroll-margin-top:70px;">
+    <div data-reveal style="display:flex;align-items:baseline;gap:14px;margin-bottom:14px;">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:2px;color:var(--green);">03</span>
+      <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:clamp(30px,4.4vw,46px);letter-spacing:-.02em;margin:0;">Leadership &amp; Review</h2>
+    </div>
+    <p data-reveal style="max-width:640px;color:var(--ink-soft);font-size:17px;line-height:1.6;margin:0 0 44px;">Commit counts measure authorship. The other half of the work is being the person other engineers route decisions through — de-facto tech lead across the MatchSync, PMT, SearchLite, and CIBMTR programs.</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+      <article data-reveal style="background:var(--card);border:1px solid var(--line);border-radius:16px;padding:32px;transition:border-color .25s;" style-hover="border-color:var(--green);">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:14px;">Designated security reviewer</div>
+        <p style="color:var(--ink-soft);font-size:16px;line-height:1.62;margin:0;">Named reviewer on the CRA team's most security-sensitive frontend work — CSP &amp; security-header configuration for iframe EPIC embedding (MR <code style="font-family:'IBM Plex Mono',monospace;font-size:13px;">!378</code>). The team's go-to authority on CSP and auth.</p>
+      </article>
+
+      <article data-reveal style="background:var(--card);border:1px solid var(--line);border-radius:16px;padding:32px;transition:border-color .25s;" style-hover="border-color:var(--green);">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:14px;">The pattern-decider</div>
+        <div style="border-left:3px solid var(--green);padding-left:16px;font-family:'Newsreader',serif;font-style:italic;font-size:18px;line-height:1.45;color:var(--ink);margin:0 0 12px;">“To my mind, it is a bad idea to pass setters from useState to the inner component. @efriday do you agree?”</div>
+        <p style="color:var(--ink-soft);font-size:15.5px;line-height:1.6;margin:0;">Colleagues defer to him on React patterns and service architecture — the <code style="font-family:'IBM Plex Mono',monospace;font-size:13px;">readonly</code> + <code style="font-family:'IBM Plex Mono',monospace;font-size:13px;">asObservable</code> pattern was rolled out across all services on his guidance.</p>
+      </article>
+
+      <article data-reveal style="background:var(--card);border:1px solid var(--line);border-radius:16px;padding:32px;transition:border-color .25s;" style-hover="border-color:var(--green);">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:14px;">Mentorship through review</div>
+        <p style="color:var(--ink-soft);font-size:16px;line-height:1.62;margin:0;">Deliberately routes junior engineers through review as a knowledge-transfer mechanism — authoring MRs and assigning them as reviewer (PMT <code style="font-family:'IBM Plex Mono',monospace;font-size:13px;">!3</code>), then handing off ownership once they're up to speed.</p>
+      </article>
+
+      <article data-reveal style="background:var(--card);border:1px solid var(--line);border-radius:16px;padding:32px;transition:border-color .25s;" style-hover="border-color:var(--green);">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:14px;">Enterprise-architecture communication</div>
+        <p style="color:var(--ink-soft);font-size:16px;line-height:1.62;margin:0;">The SSR engagement produced an SBAR, a 349-line architecture review for enterprise architects, a stakeholder deck, and 5,000+ lines of comparative research — translating deep technical work into executive-readable recommendations.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===== contribution map ===== -->
+  <section id="map" style="max-width:1080px;margin:0 auto;padding:84px 28px;scroll-margin-top:70px;">
+    <div data-reveal style="display:flex;align-items:baseline;gap:14px;margin-bottom:14px;">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:2px;color:var(--green);">04</span>
+      <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:clamp(30px,4.4vw,46px);letter-spacing:-.02em;margin:0;">Contribution Map</h2>
+    </div>
+    <p data-reveal style="max-width:640px;color:var(--ink-soft);font-size:17px;line-height:1.6;margin:0 0 36px;">Authored commits across NMDP's product lines — a proxy for sustained effort, deduped by upstream. Filter by domain. (The AI/MCP work above is local R&amp;D, authorship-of-record rather than a commit count, so it sits outside this ledger.)</p>
+
+    <!-- stats -->
+    <div data-counts data-reveal style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-bottom:44px;">
+      <div style="border-top:2px solid var(--green);padding-top:14px;"><div data-count="700" data-prefix="~" style="font-family:'Newsreader',serif;font-size:clamp(34px,5vw,52px);font-weight:500;line-height:1;color:var(--green);">~0</div><div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-top:8px;">Authored commits</div></div>
+      <div style="border-top:2px solid var(--blue);padding-top:14px;"><div data-count="89" style="font-family:'Newsreader',serif;font-size:clamp(34px,5vw,52px);font-weight:500;line-height:1;color:var(--blue);">0</div><div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-top:8px;">MCP tools shipped</div></div>
+      <div style="border-top:2px solid var(--green);padding-top:14px;"><div data-count="7" style="font-family:'Newsreader',serif;font-size:clamp(34px,5vw,52px);font-weight:500;line-height:1;color:var(--green);">0</div><div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-top:8px;">Product domains</div></div>
+      <div style="border-top:2px solid var(--blue);padding-top:14px;"><div data-count="58" data-suffix="+" style="font-family:'Newsreader',serif;font-size:clamp(34px,5vw,52px);font-weight:500;line-height:1;color:var(--blue);">0</div><div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-top:8px;">Repos audited</div></div>
+    </div>
+
+    <!-- filters -->
+    <div data-reveal style="display:flex;flex-wrap:wrap;gap:9px;margin-bottom:8px;">
+      <sc-for list="{{ filters }}" as="f" hint-placeholder-count="7">
+        <button onClick="{{ f.set }}" style="{{ f.style }}">{{ f.label }}</button>
+      </sc-for>
+    </div>
+
+    <!-- ledger header -->
+    <div style="display:grid;grid-template-columns:1.7fr .85fr 2fr .62fr;gap:16px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);padding:14px 6px 9px;border-bottom:1.5px solid var(--ink);">
+      <div>Project</div><div>Domain</div><div>Commits</div><div style="text-align:right;">Latest</div>
+    </div>
+    <!-- rows -->
+    <div>
+      <sc-for list="{{ rows }}" as="r" hint-placeholder-count="8">
+        <div style="display:grid;grid-template-columns:1.7fr .85fr 2fr .62fr;gap:16px;align-items:center;padding:13px 6px;border-bottom:1px solid var(--line);transition:background .2s;" style-hover="background:var(--paper-2);">
+          <div style="font-family:'Newsreader',serif;font-size:16.5px;">{{ r.name }}</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-soft);">{{ r.domain }}</div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="flex:1;height:8px;border-radius:4px;background:var(--paper-2);overflow:hidden;"><div style="height:100%;border-radius:4px;background:var(--green);width:{{ r.barW }};transition:width .9s cubic-bezier(.2,.7,.2,1);"></div></div>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--ink-soft);width:34px;text-align:right;">{{ r.commits }}</span>
+          </div>
+          <div style="text-align:right;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);">{{ r.latest }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- ===== timeline ===== -->
+  <section id="timeline" style="background:var(--paper-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line);scroll-margin-top:70px;">
+    <div style="max-width:1080px;margin:0 auto;padding:84px 28px;">
+      <div data-reveal style="display:flex;align-items:baseline;gap:14px;margin-bottom:14px;">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:2px;color:var(--green);">05</span>
+        <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:clamp(30px,4.4vw,46px);letter-spacing:-.02em;margin:0;">Timeline</h2>
+      </div>
+      <p data-reveal style="max-width:620px;color:var(--ink-soft);font-size:17px;line-height:1.6;margin:0 0 44px;">Recent milestones, newest first.</p>
+
+      <div style="position:relative;padding-left:34px;">
+        <div style="position:absolute;left:6px;top:6px;bottom:6px;width:2px;background:var(--line);"></div>
+
+        <div data-reveal style="position:relative;margin-bottom:34px;">
+          <div style="position:absolute;left:-34px;top:5px;width:13px;height:13px;border-radius:50%;background:var(--green);border:3px solid var(--paper-2);"></div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:1px;color:var(--green);">2026 · JUN</div>
+          <div style="font-family:'Newsreader',serif;font-size:21px;margin:3px 0 4px;">CRA SMART-on-FHIR auth-hardening</div>
+          <div style="color:var(--ink-soft);font-size:15.5px;line-height:1.55;max-width:680px;">PKCE, idle &amp; absolute session caps, issuer validation, origin allowlist, and timeout-driven token revocation — with comprehensive test coverage.</div>
+        </div>
+        <div data-reveal style="position:relative;margin-bottom:34px;">
+          <div style="position:absolute;left:-34px;top:5px;width:13px;height:13px;border-radius:50%;background:var(--green);border:3px solid var(--paper-2);"></div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:1px;color:var(--green);">2026 · MAY</div>
+          <div style="font-family:'Newsreader',serif;font-size:21px;margin:3px 0 4px;">Supply-chain audit operationalized</div>
+          <div style="color:var(--ink-soft);font-size:15.5px;line-height:1.55;max-width:680px;">Adaptive PASS/WARN/FAIL checks rolled out across 58+ repositories on scheduled CI scans — sole owner.</div>
+        </div>
+        <div data-reveal style="position:relative;margin-bottom:34px;">
+          <div style="position:absolute;left:-34px;top:5px;width:13px;height:13px;border-radius:50%;background:var(--green);border:3px solid var(--paper-2);"></div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:1px;color:var(--green);">2026 · MAR</div>
+          <div style="font-family:'Newsreader',serif;font-size:21px;margin:3px 0 4px;">@nmdp/jira-mcp published to Nexus</div>
+          <div style="color:var(--ink-soft);font-size:15.5px;line-height:1.55;max-width:680px;">A production MCP server — 89 tools across 5 domain servers — published to NMDP's private Nexus registry. ESM, Node 22+, Zod-validated, pnpm-only, with a secret-detection CI pipeline.</div>
+        </div>
+        <div data-reveal style="position:relative;margin-bottom:34px;">
+          <div style="position:absolute;left:-34px;top:5px;width:13px;height:13px;border-radius:50%;background:var(--blue);border:3px solid var(--paper-2);"></div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:1px;color:var(--blue);">2026 · Q1</div>
+          <div style="font-family:'Newsreader',serif;font-size:21px;margin:3px 0 4px;">SSR viability engagement</div>
+          <div style="color:var(--ink-soft);font-size:15.5px;line-height:1.55;max-width:680px;">Three Dockerized POCs plus shared libraries — server-side sessions, FHIR Zod schemas, and a cross-POC Playwright suite.</div>
+        </div>
+        <div data-reveal style="position:relative;margin-bottom:34px;">
+          <div style="position:absolute;left:-34px;top:5px;width:13px;height:13px;border-radius:50%;background:var(--blue);border:3px solid var(--paper-2);"></div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:1px;color:var(--blue);">2026 · Q1</div>
+          <div style="font-family:'Newsreader',serif;font-size:21px;margin:3px 0 4px;">PMT — Better Auth integration</div>
+          <div style="color:var(--ink-soft);font-size:15.5px;line-height:1.55;max-width:680px;">Role-based tRPC procedures, session-termination polling, and an admin "stop impersonation" banner on Next.js 15 / React 19.</div>
+        </div>
+        <div data-reveal style="position:relative;margin-bottom:34px;">
+          <div style="position:absolute;left:-34px;top:5px;width:13px;height:13px;border-radius:50%;background:var(--green);border:3px solid var(--paper-2);"></div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:1px;color:var(--green);">2025 · Q3</div>
+          <div style="font-family:'Newsreader',serif;font-size:21px;margin:3px 0 4px;">Okta SEL Widget</div>
+          <div style="color:var(--ink-soft);font-size:15.5px;line-height:1.55;max-width:680px;">A yarn-workspaces monorepo with a custom Okta authorization server — the transition vehicle for the SEL library.</div>
+        </div>
+        <div data-reveal style="position:relative;margin-bottom:34px;">
+          <div style="position:absolute;left:-34px;top:5px;width:13px;height:13px;border-radius:50%;background:var(--green);border:3px solid var(--paper-2);"></div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:1px;color:var(--green);">2025 · Q2</div>
+          <div style="font-family:'Newsreader',serif;font-size:21px;margin:3px 0 4px;">SEL core rewritten in TypeScript</div>
+          <div style="color:var(--ink-soft);font-size:15.5px;line-height:1.55;max-width:680px;">Rebuilt the Okta wrapper with tsup bundling and deeper Nx integration.</div>
+        </div>
+        <div data-reveal style="position:relative;margin-bottom:34px;">
+          <div style="position:absolute;left:-34px;top:5px;width:13px;height:13px;border-radius:50%;background:var(--green);border:3px solid var(--paper-2);"></div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:1px;color:var(--green);">2025 · Q1</div>
+          <div style="font-family:'Newsreader',serif;font-size:21px;margin:3px 0 4px;">API Discovery Pipeline (5 MCP servers)</div>
+          <div style="color:var(--ink-soft);font-size:15.5px;line-height:1.55;max-width:680px;">An end-to-end capture→infer→validate→mock→document pipeline driven by a supervisor state machine — built on Bun + Effect with custom Kiro agents.</div>
+        </div>
+        <div data-reveal style="position:relative;">
+          <div style="position:absolute;left:-34px;top:5px;width:13px;height:13px;border-radius:50%;background:var(--blue);border:3px solid var(--paper-2);"></div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:1px;color:var(--blue);">2024 · Q4</div>
+          <div style="font-family:'Newsreader',serif;font-size:21px;margin:3px 0 4px;">Hackathon — forms engine</div>
+          <div style="color:var(--ink-soft);font-size:15.5px;line-height:1.55;max-width:680px;">Prototyped the MatchSync forms-automation engine that fed into IFA.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== contact ===== -->
+  <section id="contact" style="max-width:1080px;margin:0 auto;padding:96px 28px 70px;scroll-margin-top:70px;">
+    <div data-reveal style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:2px;color:var(--green);margin-bottom:18px;">06 · CONTACT</div>
+    <h2 data-reveal style="font-family:'Newsreader',serif;font-weight:500;font-size:clamp(42px,7vw,80px);letter-spacing:-.03em;line-height:.98;margin:0 0 22px;">Let's build something<br>secure &amp; well-made.</h2>
+    <p data-reveal style="max-width:560px;color:var(--ink-soft);font-size:18px;line-height:1.6;margin:0 0 36px;">Open to conversations about frontend platform engineering, application security, and identity.</p>
+    <div data-reveal style="display:flex;flex-wrap:wrap;gap:14px;">
+      <a ref="{{ emailRef }}" href="#" onClick="{{ onEmail }}" style="display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:14px 20px;background:var(--card);transition:border-color .2s,transform .2s;" style-hover="border-color:var(--green);transform:translateY(-2px);"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);">Email</span><span ref="{{ emailTextRef }}" style="font-family:'Newsreader',serif;font-size:17px;">email me</span></a>
+      <a href="https://github.com/ericbfriday" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:14px 20px;background:var(--card);transition:border-color .2s,transform .2s;" style-hover="border-color:var(--green);transform:translateY(-2px);"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);">GitHub</span><span style="font-family:'Newsreader',serif;font-size:17px;">/ericbfriday</span></a>
+      <a href="https://www.linkedin.com/in/ericfriday/" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:14px 20px;background:var(--card);transition:border-color .2s,transform .2s;" style-hover="border-color:var(--green);transform:translateY(-2px);"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);">LinkedIn</span><span style="font-family:'Newsreader',serif;font-size:17px;">in/ericfriday</span></a>
+    </div>
+
+    <div data-reveal style="margin-top:64px;padding-top:22px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.5px;color:var(--muted);">
+      <span>© 2026 Eric B. Friday — Frontend &amp; Application Security Engineer</span>
+      <span>Set in Newsreader &amp; IBM Plex Mono</span>
+    </div>
+  </section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;accentScheme&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;duo&quot;, &quot;green&quot;, &quot;blue&quot;], &quot;default&quot;: &quot;duo&quot;, &quot;tsType&quot;: &quot;string&quot; },
+  &quot;defaultTheme&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;system&quot;, &quot;light&quot;, &quot;dark&quot;], &quot;default&quot;: &quot;system&quot;, &quot;tsType&quot;: &quot;string&quot; },
+  &quot;serifBody&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot; },
+  &quot;revealAnimations&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot; }
+}">
+class Component extends DCLogic {
+  rootRef = React.createRef();
+  barRef = React.createRef();
+  emailRef = React.createRef();
+  emailTextRef = React.createRef();
+  state = { theme: 'light', filter: 'All' };
+
+  // email assembled at runtime so it never sits whole in the markup (scraper-resistant)
+  emailParts = ['ericfriday', String.fromCharCode(64), 'gmail', '.', 'com'];
+  emailAddr() { return this.emailParts.join(''); }
+
+  data = [
+    { name: 'Biotherapies “Unite”', domain: 'Frontend', commits: 315, latest: '2026-02' },
+    { name: 'SEL — Okta Login', domain: 'AppSec', commits: 150, latest: '2026-02' },
+    { name: 'Intl. Forms Automation', domain: 'MatchSync', commits: 115, latest: '2026-02' },
+    { name: 'Okta SEL Widget', domain: 'AppSec', commits: 51, latest: '2025-09' },
+    { name: 'Property Mgmt Tool', domain: 'MatchSync', commits: 34, latest: '2026-01' },
+    { name: 'MatchSource', domain: 'MatchSource', commits: 25, latest: '2026-05' },
+    { name: 'SearchLite DevOps', domain: 'MatchSync', commits: 17, latest: '2026-01' },
+    { name: 'CIBMTR Reporting App', domain: 'CIBMTR', commits: 16, latest: '2026-06' },
+    { name: 'Frontend Security Audit', domain: 'AppSec', commits: 13, latest: '2026-05' },
+    { name: 'npmrc-research', domain: 'AppSec', commits: 13, latest: '2026-05' },
+    { name: 'Hackathon — Forms Engine', domain: 'MatchSync', commits: 11, latest: '2024-10' },
+    { name: 'IT / Metrics Dashboard', domain: 'Platform', commits: 5, latest: '2025-11' },
+    { name: 'HML Dashboard', domain: 'Platform', commits: 4, latest: '2026-03' },
+    { name: 'SSR Viability Sandbox', domain: 'CIBMTR', commits: 4, latest: '2026-03' }
+  ];
+  filterList = ['All', 'AppSec', 'Frontend', 'MatchSync', 'MatchSource', 'CIBMTR', 'Platform'];
+
+  componentDidMount() {
+    this.applyTheme();
+    this.applyTweaks();
+    this.initReveal();
+    // wire up the obfuscated email only after mount
+    const addr = this.emailAddr();
+    if (this.emailRef.current) this.emailRef.current.setAttribute('href', 'mailto:' + addr);
+    if (this.emailTextRef.current) this.emailTextRef.current.textContent = addr;
+    this.onScroll = () => {
+      const h = document.documentElement;
+      const max = h.scrollHeight - h.clientHeight;
+      const p = max > 0 ? Math.min(1, (h.scrollTop || document.body.scrollTop) / max) : 0;
+      if (this.barRef.current) this.barRef.current.style.width = (p * 100) + '%';
+      if (this._checkReveal) this._checkReveal();
+    };
+    window.addEventListener('scroll', this.onScroll, { passive: true });
+    this.onScroll();
+  }
+  componentWillUnmount() {
+    if (this.onScroll) window.removeEventListener('scroll', this.onScroll);
+  }
+  componentDidUpdate(prev) {
+    if (prev.accentScheme !== this.props.accentScheme || prev.serifBody !== this.props.serifBody) this.applyTweaks();
+  }
+
+  applyTheme() {
+    let mode = null;
+    try { mode = localStorage.getItem('ebf-theme'); } catch (e) {}
+    if (!mode) {
+      const d = this.props.defaultTheme || 'system';
+      mode = d === 'system'
+        ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+        : d;
+    }
+    this.setTheme(mode, false);
+  }
+  setTheme(mode, persist) {
+    document.documentElement.dataset.theme = mode;
+    if (persist !== false) { try { localStorage.setItem('ebf-theme', mode); } catch (e) {} }
+    this.setState({ theme: mode });
+  }
+  toggleTheme = () => this.setTheme(this.state.theme === 'dark' ? 'light' : 'dark', true);
+
+  onEmail = (e) => {
+    e.preventDefault();
+    window.location.href = 'mailto:' + this.emailAddr();
+  };
+
+  applyTweaks() {
+    const a = this.props.accentScheme || 'duo';
+    if (a === 'duo') delete document.documentElement.dataset.accent;
+    else document.documentElement.dataset.accent = a;
+    if (this.props.serifBody === false) document.documentElement.dataset.body = 'sans';
+    else delete document.documentElement.dataset.body;
+  }
+
+  animateCount(el) {
+    const target = +el.dataset.count;
+    const pre = el.dataset.prefix || '';
+    const suf = el.dataset.suffix || '';
+    const dur = 1300, start = performance.now();
+    const tick = (now) => {
+      const p = Math.min(1, (now - start) / dur);
+      const e = 1 - Math.pow(1 - p, 3);
+      el.textContent = pre + Math.round(target * e) + suf;
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+
+  initReveal() {
+    const root = this.rootRef.current;
+    if (!root) return;
+    const reveals = [...root.querySelectorAll('[data-reveal]')];
+    const show = (el) => {
+      if (el.dataset.shown) return;
+      el.dataset.shown = '1';
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+      if (el.hasAttribute('data-counts')) el.querySelectorAll('[data-count]').forEach(c => this.animateCount(c));
+    };
+
+    if (this.props.revealAnimations === false) {
+      reveals.forEach(show);
+      return;
+    }
+    reveals.forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(22px)';
+      el.style.transition = 'opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1)';
+    });
+
+    // manual viewport check — robust to IntersectionObserver not firing
+    // after the standalone bundler's splash/unpack (no scroll to kick it).
+    this._checkReveal = () => {
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+      reveals.forEach(el => {
+        if (el.dataset.shown) return;
+        const r = el.getBoundingClientRect();
+        if (r.top < vh * 0.92 && r.bottom > 0) show(el);
+      });
+    };
+
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) { show(e.target); io.unobserve(e.target); } });
+      }, { threshold: 0.12, rootMargin: '0px 0px -7% 0px' });
+      reveals.forEach(el => io.observe(el));
+    }
+
+    // safety nets: poll until the page settles. The standalone bundler swaps
+    // its splash for the real page without firing a scroll/IO change, and the
+    // swap can land after a one-shot timer — so keep checking for a few seconds.
+    requestAnimationFrame(this._checkReveal);
+    window.addEventListener('load', this._checkReveal);
+    let ticks = 0;
+    const iv = setInterval(() => {
+      this._checkReveal();
+      // ~4s: final guarantee — reveal anything still hidden so no content is
+      // ever stranded if scroll/IntersectionObserver never fire (e.g. a
+      // full-height embed or the offline bundle's splash→page swap).
+      if (++ticks > 16) { clearInterval(iv); reveals.forEach(show); }
+    }, 250);
+  }
+
+  renderVals() {
+    const f = this.state.filter;
+    const max = 315;
+    const rows = this.data
+      .filter(d => f === 'All' || d.domain === f)
+      .map(d => ({
+        name: d.name, domain: d.domain, commits: d.commits, latest: d.latest,
+        barW: Math.max(4, Math.round(d.commits / max * 100)) + '%'
+      }));
+
+    const baseChip = {
+      fontFamily: "'IBM Plex Mono', monospace", fontSize: '12px', letterSpacing: '.5px',
+      padding: '6px 14px', borderRadius: '999px', cursor: 'pointer',
+      border: '1px solid var(--line)', background: 'var(--card)', color: 'var(--ink-soft)',
+      transition: 'all .2s'
+    };
+    const activeChip = { ...baseChip, background: 'var(--green)', color: '#fff', borderColor: 'var(--green)' };
+    const filters = this.filterList.map(label => ({
+      label,
+      style: label === f ? activeChip : baseChip,
+      set: () => this.setState({ filter: label })
+    }));
+
+    return {
+      rootRef: this.rootRef,
+      barRef: this.barRef,
+      emailRef: this.emailRef,
+      emailTextRef: this.emailTextRef,
+      onEmail: this.onEmail,
+      toggleTheme: this.toggleTheme,
+      themeIcon: this.state.theme === 'dark' ? '☀' : '☾',
+      rows,
+      filters
+    };
+  }
+}
+</script>
+</body>
+</html>
